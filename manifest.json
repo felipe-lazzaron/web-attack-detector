@@ -1,17 +1,24 @@
 {
     "manifest_version": 2,
-    "name": "Detector de Ataques Web",
+    "name": "Web Attack & Privacy Violation Detector",
     "version": "1.0",
-    "permissions": ["<all_urls>", "webRequest", "cookies"],
+    "description": "Detects potential security threats and privacy violations in web clients.",
+    "icons": {
+        "48": "icons/icon48.png",
+        "96": "icons/icon96.png"
+    },
+    "permissions": [
+        "<all_urls>",
+        "webRequest",
+        "webRequestBlocking",
+        "cookies",
+        "storage"
+    ],
     "background": {
-      "scripts": ["scripts/background.js"],
-      "persistent": false
+        "scripts": ["background.js"]
     },
     "browser_action": {
-      "default_popup": "popup/popup.html",
-      "default_icon": "icons/icon.png"
-    },
-    "icons": {
-      "48": "icons/icon.png"
+        "default_icon": "icons/icon.png",
+        "default_popup": "popup.html"
     }
-  }
+}
