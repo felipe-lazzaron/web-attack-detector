@@ -25,8 +25,3 @@ Contribuições são sempre bem-vindas! Se você tem sugestões para melhorar es
 
 ## Licença
 Este projeto é distribuído sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes ou visite [MIT License](https://opensource.org/licenses/MIT).
-
-## Contato
-- **Desenvolvedor**: Seu Nome
-- **Email**: seu.email@example.com
-- **GitHub**: [SeuUsername](https://github.com/SeuUsername)
