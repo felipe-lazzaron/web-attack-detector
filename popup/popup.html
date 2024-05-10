@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Detector de Ataques Web</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <h1>Detector de Ataques Web</h1>
+    <button id="checkSecurityButton">Verificar Segurança</button>
+    <button id="checkThirdPartyDomainsButton">Detectar Domínios de Terceiros</button>
+    <button id="checkCookiesButton">Verificar Cookies Injetados</button>
+    <button id="checkStorageButton">Verificar Armazenamento Local</button>
+    <button id="checkCookieSyncButton">Detectar Sincronismo de Cookies</button>
+    <button id="detectInjectionsButton">Detectar Injeções de Scripts</button>
+    <div id="loading" style="display: none;">Verificando...</div>
+    <div id="results" class="results"></div>
+    <script src="popup.js"></script>
+</body>
+</html>

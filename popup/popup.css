@@ -1,0 +1,35 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 10px;
+    padding: 0;
+    background-color: #f9f9f9;
+    color: #333;
+}
+
+h1 {
+    color: #5a5a5a;
+    font-size: 16px;
+}
+
+#status {
+    margin-bottom: 10px;
+}
+
+#results {
+    margin-top: 20px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+button {
+    padding: 5px 10px;
+    background-color: #0078D7;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}

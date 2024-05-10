@@ -28,6 +28,21 @@ browser.cookies.onChanged.addListener((changeInfo) => {
   }
 });
 
+// Listener para mensagens do popup
+browser.alarms.create("myAlarm", { delayInMinutes: 1, periodInMinutes: 1 });
+
+browser.alarms.onAlarm.addListener(alarm => {
+  console.log(`Alarm ${alarm.name} triggered`);
+});
+
+//para fazer o popup aparecer, é necessário enviar uma mensagem para o background
+browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.command === "check") {
+    console.log("Verificação solicitada pelo popup");
+    sendResponse({ result: "10 ameaças detectadas" });
+  }
+});
+
 // Alarmes para ações programadas
 browser.alarms.create("checkWebHealth", { delayInMinutes: 1, periodInMinutes: 5 });
 browser.alarms.onAlarm.addListener((alarm) => {
