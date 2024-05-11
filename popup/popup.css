@@ -2,12 +2,22 @@ body {
     font-family: Arial, sans-serif;
     margin: 10px;
     padding: 0;
-    background-color: #f9f9f9;
-    color: #333;
+    background-color: #0c0d0c;
+    color: white;
+}
+
+.vertical {
+
+    display: flex;
+    flex-direction: row;
+    align-items: left;
+    width: 600px;
+    flex-wrap: wrap;
+
 }
 
 h1 {
-    color: #5a5a5a;
+    color: greenyellow;
     font-size: 16px;
 }
 
@@ -19,15 +29,25 @@ h1 {
     margin-top: 20px;
     max-height: 300px;
     overflow-y: auto;
+    background-color: black;
+    font-family: monospace;
+    padding: 5px;
+    border-radius: 2.5px;
+    margin: 5px;
+    max-width: max-content;
+    white-space: pre-line;
 }
 
 button {
+    width: 120px;
     padding: 5px 10px;
     background-color: #0078D7;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    margin-right: 10px;
+    margin-bottom: 10px;
 }
 
 button:hover {

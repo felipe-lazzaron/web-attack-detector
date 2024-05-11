@@ -57,9 +57,6 @@ browser.runtime.onMessage.addListener(function(message, sender, sendResponse) {
   if (message.action === "checkThirdPartyDomains") {
       const thirdPartyDomains = detectThirdPartyDomains();
       browser.runtime.sendMessage({result: thirdPartyDomains});
-  } else if (message.action === "checkCookies") {
-      const cookieCount = document.cookie.split(';').length;
-      browser.runtime.sendMessage({result: [`Total de cookies injetados: ${cookieCount}`]});
   }
 });
 
@@ -134,4 +131,134 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
           browser.runtime.sendMessage({ result: 'Nenhuma injeção de script suspeita detectada.' });
       }
   }
+});
+
+// 
+function getCookiesDetails() {
+  const allCookies = document.cookie.split('; ');
+  const cookieDetails = {
+      total: allCookies.length,
+      firstParty: [],
+      thirdParty: [],
+      sessionCookies: [],
+      persistentCookies: []
+  };
+
+  allCookies.forEach(cookie => {
+      const cookieParts = cookie.split('=');
+      const cookieName = cookieParts[0];
+      const cookieValue = cookieParts[1];
+      const domain = getCookieDomain(cookieName);
+
+      // Determinar se é de primeira ou terceira parte
+      if (domain === window.location.hostname) {
+          cookieDetails.firstParty.push(cookieName);
+      } else {
+          cookieDetails.thirdParty.push(cookieName);
+      }
+
+      // Determinar se é sessão ou persistente
+      if (isSessionCookie(cookieName)) {
+          cookieDetails.sessionCookies.push(cookieName);
+      } else {
+          cookieDetails.persistentCookies.push(cookieName);
+      }
+  });
+
+  return cookieDetails;
+}
+
+function getCookieDomain(cookieName) {
+  // Implementação para determinar o domínio do cookie
+  // Pode requerer acesso ao httpOnly cookies via background script se necessário
+  return window.location.hostname;
+}
+
+function isSessionCookie(cookieName) {
+  // Simplificação: verificar se existe um atributo de expiração
+  // Isso pode ser complexo dependendo de como você acessa os detalhes do cookie
+  return document.cookie.includes(`${cookieName}=`) && !document.cookie.includes(`${cookieName}=;`);
+}
+
+browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.action === "checkCookies") {
+      const cookiesInfo = getCookiesDetails();
+      browser.runtime.sendMessage({
+          result: [
+              `Total de cookies: ${cookiesInfo.total}`,
+              `Cookies de primeira parte: ${cookiesInfo.firstParty.length}`,
+              `Cookies de terceira parte: ${cookiesInfo.thirdParty.length}`,
+              `Cookies de sessão: ${cookiesInfo.sessionCookies.length}`,
+              `Cookies persistentes: ${cookiesInfo.persistentCookies.length}`
+          ]
+      });
+  }
+});
+
+function monitorCanvasFingerprinting() {
+  const originalToDataURL = HTMLCanvasElement.prototype.toDataURL;
+  HTMLCanvasElement.prototype.toDataURL = function() {
+      alert("Canvas fingerprinting attempt detected!");
+      return originalToDataURL.apply(this, arguments);
+  };
+}
+
+monitorCanvasFingerprinting();
+
+browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.action === "checkCanvasFingerprinting") {
+      // Pode expandir para verificar e relatar mais detalhes aqui
+      browser.runtime.sendMessage({result: "Monitoramento de Canvas Fingerprinting ativado."});
+  }
+});
+
+function calculatePrivacyScore() {
+  let score = 0;
+  let errors = [];
+
+  // Verifica cookies de terceiros
+  try {
+      if (detectThirdPartyCookies().length > 0) {
+          score -= 1;
+      }
+  } catch (error) {
+      errors.push("Failed to check third-party cookies.");
+  }
+
+  // Verifica se o site usa HTTPS
+  try {
+      if (window.location.protocol === "https:") {
+          score += 1;
+      }
+  } catch (error) {
+      errors.push("Failed to check HTTPS usage.");
+  }
+
+  // A verificação da política de privacidade foi removida do cálculo de pontuação.
+
+  return { score, errors };
+}
+
+browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.action === "calculatePrivacyScore") {
+      const { score, errors } = calculatePrivacyScore();
+      sendResponse({result: `Pontuação de privacidade da página: ${score}`, errors: errors});
+  }
+  return true; // Indica que a resposta será enviada de forma assíncrona
+});
+
+
+
+browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  try {
+      if (message.action === "calculatePrivacyScore") {
+          const score = calculatePrivacyScore();
+          sendResponse({result: `Privacy score of the page: ${score}`});
+      }
+      // Outras ações podem ser adicionadas aqui
+  } catch (error) {
+      console.error("Error during processing:", error);
+      sendResponse({error: "Failed to process the request."});
+  }
+  return true; // Indica que a resposta será enviada de forma assíncrona
 });
