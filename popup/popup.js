@@ -17,21 +17,20 @@ function displayLoading() {
 }
 
 function sendMessageToContentScript(message) {
+    const timeoutId = setTimeout(() => {
+        displayError("Timeout: The check took too long to respond.");
+    }, 10000); // Timeout de 10 segundos
+
     browser.tabs.query({active: true, currentWindow: true}, tabs => {
         if (tabs.length === 0) {
-            console.error("No active tabs found.");
-            displayError("No active tab to check.");
+            clearTimeout(timeoutId);
+            displayError("No active tab found.");
             return;
         }
-
         browser.tabs.sendMessage(tabs[0].id, message)
             .then(response => {
                 clearTimeout(timeoutId);
-                if (response.errors && response.errors.length > 0) {
-                    displayResults(response.result, response.errors);
-                } else {
-                    displayResults(response.result);
-                }
+                displayResults(response);
             })
             .catch(err => {
                 clearTimeout(timeoutId);
@@ -41,24 +40,20 @@ function sendMessageToContentScript(message) {
     });
 }
 
-function displayResults(results, errors = []) {
+
+function displayResults(response) {
     document.getElementById('loading').style.display = 'none';
     const resultsElement = document.getElementById('results');
-    resultsElement.style.display = 'flex';
     resultsElement.innerHTML = ''; // Limpa resultados anteriores
+    resultsElement.style.display = 'block';
 
-    const resultsMsg = document.createElement('div');
-    resultsMsg.className = 'card';
-    resultsMsg.textContent = results;
-    resultsElement.appendChild(resultsMsg);
-
-    errors.forEach(error => {
-        const errorMsg = document.createElement('div');
-        errorMsg.className = 'card error';
-        errorMsg.textContent = error;
-        resultsElement.appendChild(errorMsg);
-    });
+    const resultDiv = document.createElement('div');
+    resultDiv.textContent = response.result; // Assume que 'response.result' já é uma string formatada
+    resultsElement.appendChild(resultDiv);
 }
+
+
+
 
 
 function displayError(message) {
